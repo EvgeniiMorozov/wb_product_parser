@@ -29,28 +29,6 @@ PROD_ID_LIST = ["21264155", "26301070"]
 fetching_data = []
 
 
-# async def get_html(url: str, session: ClientSession):
-#     await asyncio.sleep(5, 15)
-#     async with session.get(url=url, headers=HEADERS) as response:
-#         if response.status != "200":
-#             print(f"Что-то пошло не так! {response.status}")
-#         print(f"Get data from --> {url}")
-#         response_text = await response.text()
-#         fetching_data.append(response_text)
-#         return response_text
-
-
-# async def fetch_content():
-#     async with ClientSession() as session:
-#         tasks = []
-#         for product_id in PROD_ID_LIST:
-#             url = f"https://www.wildberries.ru/catalog/{product_id}/detail.aspx?targetUrl=GP"
-#             task = asyncio.create_task(get_html(url, session))
-#             tasks.append(task)
-#
-#         return await asyncio.gather(*tasks)
-
-
 def get_html(url, params=None):
     print(f"{url=}")
     return requests.get(url, headers=HEADERS, params=None).text
