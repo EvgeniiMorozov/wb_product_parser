@@ -6,10 +6,9 @@ from pathlib import Path
 from time import sleep
 
 from bs4 import BeautifulSoup
-from config import HEADERS, HOST, HTTPS_PREF, spec_pattern
+from config import HEADERS, HTTPS_PREF, phone_spec_pattern, phone_local_path_pref
 
-
-PROD_ID_LIST = ["21264155", "26301070"]
+PROD_ID_LIST = ["21264155", "26301070", "17853563", "23484561"]
 
 # PROTO_URL = f"https://www.wildberries.ru/catalog/{product_id}/detail.aspx?targetUrl=GP"
 
@@ -20,9 +19,8 @@ PROD_ID_LIST = ["21264155", "26301070"]
 images_urls = []
 
 
-def get_html(url, params=None):
-    print(f"{url=}")
-    return requests.get(url, headers=HEADERS, params=None).text
+def get_html(url):
+    return requests.get(url, headers=HEADERS).text
 
 
 def get_content(html):
@@ -45,10 +43,15 @@ def get_content(html):
     img_links = []
     for i in range(3):
         # <img src="//images.wbstatic.net/tm/new/26820000/26828281-1.jpg" alt=" Вид 1.">
+        # '//images.wbstatic.net/c324x432/new/23480000/23484561-1.jpg'
         link = img_items[i].find("div", class_="slide__content").find("img").get("src")
-        image_link = re.sub(r"/tm/", "/big/", link)
-        img_links.append(HTTPS_PREF+"".join(image_link))
-        images_urls.append(HTTPS_PREF+"".join(image_link))
+        image_link = ''.join(re.sub(r"/tm/", "/big/", link))
+        # filename = re.search(r'/(\d{6,8}-\d\.jpg)$', image_link)
+        filename = image_link.split('/')[-1]
+        image_url_link = HTTPS_PREF + image_link
+        image_local_link = phone_local_path_pref + vendor_code + '/' + filename
+        img_links.append(image_local_link)
+        images_urls.append(image_url_link)
 
     # price_soup
     if not price_soup.find("span", class_="price-block__final-price"):
@@ -65,51 +68,18 @@ def get_content(html):
     details_table = details_soup.find("div", class_="product-params")
     table_rows = details_table.find_all("tr", class_="product-params__row")
 
-    search_list = spec_pattern.keys()
+    search_list = phone_spec_pattern.keys()
 
     specification = {}
 
     for row in table_rows:
         key_row_text = row.find("span", class_="product-params__cell-decor").find("span").get_text()
         if key_row_text in search_list:
-            spec_key = spec_pattern[key_row_text]
+            spec_key = phone_spec_pattern[key_row_text]
             try:
                 specification[spec_key] = row.find("td", class_="product-params__cell").get_text(strip=True)
             except Exception as ex:
                 specification[spec_key] = None
-    # for row in table_rows:
-    #     if row.find("th", class_="product-params__cell").find("span", class_="product-params__cell-decor").find("span").get_text() == "Операционная система":
-    #         specification_dict["operating_system"] = row.find("td", class_="product-params__cell").get_text(strip=True)
-    #
-    #     elif row.find("th", class_="product-params__cell").find("span", class_="product-params__cell-decor").find("span").get_text() == "Модель":
-    #         specification_dict["model"] = row.find("td", class_="product-params__cell").get_text(strip=True)
-    #
-    #     elif row.find("th", class_="product-params__cell").find("span", class_="product-params__cell-decor").find("span").get_text() == "Гарантийный срок":
-    #         specification_dict["guarantee"] = row.find("td", class_="product-params__cell").get_text(strip=True)
-    #
-    #     elif row.find("th", class_="product-params__cell").find("span", class_="product-params__cell-decor").find("span").get_text() == "Тип дисплея/экрана":
-    #         specification_dict["display_type"] = row.find("td", class_="product-params__cell").get_text(strip=True)
-    #
-    #     elif row.find("th", class_="product-params__cell").find("span", class_="product-params__cell-decor").find("span").get_text() == "Диагональ экрана":
-    #         specification_dict["screen_diagonal"] = row.find("td", class_="product-params__cell").get_text(strip=True)
-    #
-    #     elif row.find("th", class_="product-params__cell").find("span", class_="product-params__cell-decor").find("span").get_text() == "Разрешение экрана":
-    #         specification_dict["screen_resolution"] = row.find("td", class_="product-params__cell").get_text(strip=True)
-    #
-    #     elif row.find("th", class_="product-params__cell").find("span", class_="product-params__cell-decor").find("span").get_text() == "Процессор":
-    #         specification_dict["cpu"] = row.find("td", class_="product-params__cell").get_text(strip=True)
-    #
-    #     elif row.find("th", class_="product-params__cell").find("span", class_="product-params__cell-decor").find("span").get_text() == "Объем встроенной памяти (Гб)":
-    #         specification_dict["ROM_size"] = row.find("td", class_="product-params__cell").get_text(strip=True)
-    #
-    #     elif row.find("th", class_="product-params__cell").find("span", class_="product-params__cell-decor").find("span").get_text() == "Объем оперативной памяти (Гб)":
-    #         specification_dict["RAM_size"] = row.find("td", class_="product-params__cell").get_text(strip=True)
-    #
-    #     elif row.find("th", class_="product-params__cell").find("span", class_="product-params__cell-decor").find("span").get_text() == "Емкость аккумулятора":
-    #         specification_dict["battery_capacity"] = row.find("td", class_="product-params__cell").get_text(strip=True)
-    #
-    #     elif row.find("th", class_="product-params__cell").find("span", class_="product-params__cell-decor").find("span").get_text() == "Количество мп основной камеры":
-    #         specification_dict["main_camera_resolution"] = row.find("td", class_="product-params__cell").get_text(strip=True)
 
     result = {
         "brand": brand,
@@ -141,9 +111,9 @@ def main():
         html = get_html(url)
         get_content(html)
 
-    with open('images_urls.txt', 'w') as file:
+    with open('phone_images_urls.txt', 'w') as file:
         for url in images_urls:
-            file.write(url+'\n')
+            file.write(url + '\n')
 
 
 if __name__ == '__main__':

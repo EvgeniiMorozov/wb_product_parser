@@ -9,7 +9,7 @@ HEADERS = {
 HOST = "https://www.wildberries.ru"
 HTTPS_PREF = "https:"
 
-spec_pattern = {
+phone_spec_pattern = {
     "Операционная система": "operating_system",
     "Модель": "model",
     "Гарантийный срок": "guarantee",
@@ -22,3 +22,5 @@ spec_pattern = {
     "Емкость аккумулятора": "battery_capacity",
     "Количество мп основной камеры": "main_camera_resolution"
 }
+
+phone_local_path_pref = 'source/phones/'
