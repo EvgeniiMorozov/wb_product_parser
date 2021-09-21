@@ -26,7 +26,7 @@ def get_prod_ids(content):
 
 
 def main():
-    pages = 5
+    pages = 1
     for page in range(1, pages+1):
         print(f'Страница {page} из {pages}...')
         # f'https://www.wildberries.ru/catalog/elektronika/noutbuki-pereferiya/noutbuki-ultrabuki?page=5&fbrand=6049%3B24012%3B6667%3B6364%3B19467%3B3859%3B5786'

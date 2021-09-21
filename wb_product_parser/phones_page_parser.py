@@ -1,3 +1,4 @@
+import time
 from random import randint
 import re
 import requests
@@ -33,7 +34,7 @@ def get_content(html):
     # header_soup
     brand = (
         header_soup.find("h1", class_="same-part-kt__header").find_next("span").get_text(strip=True))
-
+    print(brand)
     vendor_code = soup.find("div", class_="same-part-kt__common-info").find("span", class_="hide-desktop")
     vendor_code = vendor_code.find_next("span").get_text(strip=True)
 
@@ -75,21 +76,25 @@ def get_content(html):
     for row in table_rows:
         key_row_text = row.find("span", class_="product-params__cell-decor").find("span").get_text()
         if key_row_text in search_list:
-            spec_key = phone_spec_pattern[key_row_text]
             try:
+                spec_key = phone_spec_pattern[key_row_text]
                 specification[spec_key] = row.find("td", class_="product-params__cell").get_text(strip=True)
             except Exception as ex:
+                spec_key = phone_spec_pattern[key_row_text]
                 specification[spec_key] = None
+    model = brand if specification['model'] is None else specification['model']
+    print(model)
 
     result = {
         "brand": brand,
-        "model": specification["model"],
+        "model": model,
         "vendor": vendor_code,
         "price": price,
         "description": description_text,
         "specification": specification,
         "images_urls": img_links,
     }
+
     # print(result)
     make_json_file(f"{vendor_code}", result)
 
@@ -103,8 +108,14 @@ def make_json_file(filename, data):
 
 
 def main():
-    for product_id in PROD_ID_LIST:
+    start = time.time()
+    with open('phones_ids.txt', 'r') as file:
+        product_ids = file.readlines()
+    product_ids = [chunk.strip() for chunk in product_ids]
+
+    for idx, product_id in enumerate(product_ids, start=1):
         sleep(randint(5, 7))
+        print(f'{idx} - {product_id}')
         url = (
             f"https://www.wildberries.ru/catalog/{product_id}/detail.aspx?targetUrl=GP"
         )
@@ -114,6 +125,9 @@ def main():
     with open('phone_images_urls.txt', 'w') as file:
         for url in images_urls:
             file.write(url + '\n')
+
+    end = time.time()
+    print(end-start)
 
 
 if __name__ == '__main__':
