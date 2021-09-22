@@ -1,10 +1,10 @@
+from collections import defaultdict
 import time
 from random import randint
 import re
 import requests
 import json
 from pathlib import Path
-from time import sleep
 
 from bs4 import BeautifulSoup
 from config import HEADERS, HTTPS_PREF, phone_spec_pattern, phone_local_path_pref
@@ -40,14 +40,14 @@ def get_content(html):
 
     # slider_soup
     swiper_container = slider_soup.find("ul", class_="swiper-wrapper")
-    img_items = swiper_container.find_all("li")
     img_links = []
-    for i in range(3):
+    img_items = swiper_container.find_all("img")
+
+    for i in range(3 if len(img_items) >= 3 else len(img_items)):
         # <img src="//images.wbstatic.net/tm/new/26820000/26828281-1.jpg" alt=" Вид 1.">
         # '//images.wbstatic.net/c324x432/new/23480000/23484561-1.jpg'
-        link = img_items[i].find("div", class_="slide__content").find("img").get("src")
+        link = img_items[i].get("src")
         image_link = ''.join(re.sub(r"/tm/", "/big/", link))
-        # filename = re.search(r'/(\d{6,8}-\d\.jpg)$', image_link)
         filename = image_link.split('/')[-1]
         image_url_link = HTTPS_PREF + image_link
         image_local_link = phone_local_path_pref + vendor_code + '/' + filename
@@ -71,7 +71,8 @@ def get_content(html):
 
     search_list = phone_spec_pattern.keys()
 
-    specification = {}
+    specification = defaultdict()
+    specification.default_factory = lambda: 'Уточнить'
 
     for row in table_rows:
         key_row_text = row.find("span", class_="product-params__cell-decor").find("span").get_text()
@@ -82,12 +83,10 @@ def get_content(html):
             except Exception as ex:
                 spec_key = phone_spec_pattern[key_row_text]
                 specification[spec_key] = None
-    model = brand if specification['model'] is None else specification['model']
-    print(model)
 
     result = {
         "brand": brand,
-        "model": model,
+        "model": specification['model'],
         "vendor": vendor_code,
         "price": price,
         "description": description_text,
@@ -114,7 +113,7 @@ def main():
     product_ids = [chunk.strip() for chunk in product_ids]
 
     for idx, product_id in enumerate(product_ids, start=1):
-        sleep(randint(5, 7))
+        time.sleep(randint(5, 7))
         print(f'{idx} - {product_id}')
         url = (
             f"https://www.wildberries.ru/catalog/{product_id}/detail.aspx?targetUrl=GP"
