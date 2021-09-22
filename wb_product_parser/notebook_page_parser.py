@@ -43,7 +43,7 @@ def get_content(html):
     img_links = []
     img_items = swiper_container.find_all("img")
 
-    for i in range(3 if len(img_items) >= 3 else len(img_items)):
+    for i in range(min(len(img_items), 3)):
         # <img src="//images.wbstatic.net/tm/new/26820000/26828281-1.jpg" alt=" Вид 1.">
         # '//images.wbstatic.net/c324x432/new/23480000/23484561-1.jpg'
         link = img_items[i].get("src")
