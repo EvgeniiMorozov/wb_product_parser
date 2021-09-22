@@ -30,11 +30,14 @@ notebook_spec_pattern = {
     "Тип дисплея/экрана": "display_type",
     "Диагональ экрана": "screen_diagonal",
     "Разрешение экрана": "screen_resolution",
+    "Тип матрицы": "matrix_type",
     "Процессор": "cpu",
+    "Количество ядер процессора": "cpu_cores",
+    "Тактовая частота процессора": "cpu_clock_speed",
     "Объем встроенной памяти (Гб)": "ROM_size",
+    "Объем накопителя SSD": "SSD_ROM_size",
+    "Объем накопителя HDD": "HDD_ROM_size",
     "Объем оперативной памяти (Гб)": "RAM_size",
-    "Емкость аккумулятора": "battery_capacity",
-    "Количество мп основной камеры": "main_camera_resolution"
 }
 
 phone_local_path_pref = 'source/phones/'

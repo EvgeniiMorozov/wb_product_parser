@@ -29,13 +29,13 @@ def main():
     pages = 1
     for page in range(1, pages+1):
         print(f'Страница {page} из {pages}...')
-        # f'https://www.wildberries.ru/catalog/elektronika/noutbuki-pereferiya/noutbuki-ultrabuki?page=5&fbrand=6049%3B24012%3B6667%3B6364%3B19467%3B3859%3B5786'
-        url = f'https://www.wildberries.ru/catalog/elektronika/smartfony-i-telefony/vse-smartfony?sort=popular&page={page}&fbrand=5789%3B6049%3B5786%3B5779%3B16111%3B10883%3B28380%3B132943%3B5772'
+        url = f'https://www.wildberries.ru/catalog/elektronika/noutbuki-pereferiya/noutbuki-ultrabuki?page={page}&fbrand=6049%3B24012%3B6667%3B6364%3B19467%3B3859%3B5786'
+        # url = f'https://www.wildberries.ru/catalog/elektronika/smartfony-i-telefony/vse-smartfony?sort=popular&page={page}&fbrand=5789%3B6049%3B5786%3B5779%3B16111%3B10883%3B28380%3B132943%3B5772'
         content = get_content(url)
         get_prod_ids(content)
         sleep(randint(8, 12))
 
-    with open('phones_ids.txt', 'w') as file:
+    with open('notebooks_ids.txt', 'w') as file:
         for product in products:
             file.write(product+'\n')
 

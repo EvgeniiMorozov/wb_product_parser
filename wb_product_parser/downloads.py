@@ -2,7 +2,7 @@ from pathlib import Path
 from random import randint
 from time import sleep
 
-from config import HEADERS, phone_local_path_pref
+from config import HEADERS, phone_local_path_pref, notebook_local_path_pref
 import requests
 
 
@@ -22,13 +22,9 @@ def save_image(filename, binary_content):
         file.write(binary_content)
 
 
-# def get_path(url_link):
-#     # 'https://images.wbstatic.net/big/new/21260000/21264155-1.jpg'
-#     filename = url_link.split('/')[-1]
-
-
 def main():
-    urls_list = read_file('phone_images_urls.txt')
+    urls_list = read_file('notebook_images_urls.txt')
+    # urls_list = read_file('phone_images_urls.txt')
     # print(urls_list)
     # 'https://images.wbstatic.net/big/new/21260000/21264155-1.jpg'
     for idx, url in enumerate(urls_list):
@@ -37,7 +33,8 @@ def main():
         print(url)
         filename = url.split('/')[-1]
         directory = filename.split('-')[0]
-        path = phone_local_path_pref + f'{directory}'
+        path = notebook_local_path_pref + f'{directory}'
+        # path = phone_local_path_pref + f'{directory}'
         if not Path(path).exists():
             Path(path).mkdir()
         content = get_content(url)
