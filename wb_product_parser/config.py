@@ -23,4 +23,19 @@ phone_spec_pattern = {
     "Количество мп основной камеры": "main_camera_resolution"
 }
 
+notebook_spec_pattern = {
+    "Операционная система": "operating_system",
+    "Модель": "model",
+    "Гарантийный срок": "guarantee",
+    "Тип дисплея/экрана": "display_type",
+    "Диагональ экрана": "screen_diagonal",
+    "Разрешение экрана": "screen_resolution",
+    "Процессор": "cpu",
+    "Объем встроенной памяти (Гб)": "ROM_size",
+    "Объем оперативной памяти (Гб)": "RAM_size",
+    "Емкость аккумулятора": "battery_capacity",
+    "Количество мп основной камеры": "main_camera_resolution"
+}
+
 phone_local_path_pref = 'source/phones/'
+notebook_local_path_pref = 'source/notebooks/'

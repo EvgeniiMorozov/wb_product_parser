@@ -29,7 +29,7 @@ def save_image(filename, binary_content):
 
 def main():
     urls_list = read_file('phone_images_urls.txt')
-    print(urls_list)
+    # print(urls_list)
     # 'https://images.wbstatic.net/big/new/21260000/21264155-1.jpg'
     for idx, url in enumerate(urls_list):
         sleep(randint(5, 8))
