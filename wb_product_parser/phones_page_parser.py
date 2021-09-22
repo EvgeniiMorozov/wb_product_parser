@@ -37,6 +37,8 @@ def get_content(html):
     print(brand)
     vendor_code = soup.find("div", class_="same-part-kt__common-info").find("span", class_="hide-desktop")
     vendor_code = vendor_code.find_next("span").get_text(strip=True)
+    short_description = header_soup.find("h1", class_="same-part-kt__header").find_next("span")\
+        .find_next('span').get_text(strip=True)
 
     # slider_soup
     swiper_container = slider_soup.find("ul", class_="swiper-wrapper")
@@ -88,6 +90,7 @@ def get_content(html):
         "brand": brand,
         "model": specification['model'],
         "vendor": vendor_code,
+        "short_description": short_description,
         "price": price,
         "description": description_text,
         "specification": specification,
